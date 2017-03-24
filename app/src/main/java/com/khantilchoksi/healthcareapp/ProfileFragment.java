@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -39,7 +38,6 @@ import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -97,8 +95,8 @@ public class ProfileFragment extends Fragment implements GetPatientProfileTask.A
     private TextView mState;
     private Button mSaveButton;
 
-    private double mLatitude;
-    private double mLongitude;
+    private double mLatitude = 0;
+    private double mLongitude = 0;
 
     private ProgressDialog progressDialog;
 
@@ -232,6 +230,16 @@ public class ProfileFragment extends Fragment implements GetPatientProfileTask.A
         progressDialog.show();
         GetPatientProfileTask getPatientProfileTask = new GetPatientProfileTask(getContext(),getActivity(),this,progressDialog);
         getPatientProfileTask.execute((Void) null);
+
+        Button detectCurrentLocationButton = (Button) mRootView.findViewById(R.id.detect_current_location_button);
+        detectCurrentLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.connect();
+                }
+            }
+        });
 
         buildGoogleApiClient();
 
@@ -376,9 +384,7 @@ public class ProfileFragment extends Fragment implements GetPatientProfileTask.A
 
     @Override
     public void onStart() {
-        if (!mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.connect();
-        }
+
         super.onStart();
     }
 

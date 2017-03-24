@@ -101,7 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        signupButton.setEnabled(false);
+        //signupButton.setEnabled(false);
 
         progressDialog = new ProgressDialog(RegisterActivity.this,
                 R.style.AppTheme_Dark_Dialog);
@@ -476,11 +476,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void successfulRegistered() {
         progressDialog.dismiss();
-        Intent mainActivity = new Intent(RegisterActivity.this, MainActivity.class);
+        Intent homeActivity = new Intent(RegisterActivity.this, HomeActivity.class);
 //                Bundle extras = new Bundle();           //parcelable
 //                extras.putInt("Client ID", clientId);  //key - value pair
 //                ticketHomepage.putExtras(extras);
-        startActivity(mainActivity);
+        startActivity(homeActivity);
         finish();
     }
 

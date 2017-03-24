@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -83,6 +82,13 @@ public class PersonalFragment extends Fragment {
         drawable.setCircular(true);
         userProfilePhoto.setImageDrawable(drawable);
 
+        //Setting name and mobile number from the shared preferences
+        TextView patientNameTextView = (TextView) rootView.findViewById(R.id.user_profile_name);
+        patientNameTextView.setText(Utility.getPatientFullName(getContext()));
+
+        TextView patientMobileTextView = (TextView) rootView.findViewById(R.id.user_profile_short_number);
+        patientMobileTextView.setText(getContext().getResources().getString(R.string.indian_country_code).
+                concat(Utility.getPatientMobileNumber(getContext())));
 
         TextView editProfileTextView = (TextView) rootView.findViewById(R.id.edit_profile_textview);
         editProfileTextView.setOnClickListener(new View.OnClickListener() {
