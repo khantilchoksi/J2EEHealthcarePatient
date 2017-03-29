@@ -42,6 +42,7 @@ public class CreateAppointmentTask extends AsyncTask<Void, Void, Boolean> {
     Activity activity;
     String mDcId;
     ProgressDialog progressDialog;
+    String issue;
 
     /*public interface AsyncResponse {
         void processSlotFinish(String response);
@@ -54,6 +55,7 @@ public class CreateAppointmentTask extends AsyncTask<Void, Void, Boolean> {
         this.context = context;
         this.activity = activity;
         this.progressDialog = progressDialog;
+        issue = context.getResources().getString(R.string.error_unknown_error);
         //this.delegate = delegate;
     }
 
@@ -193,7 +195,10 @@ public class CreateAppointmentTask extends AsyncTask<Void, Void, Boolean> {
                 /*Snackbar.make(, R.string.error_unknown_error,
                         Snackbar.LENGTH_LONG)
                         .show();*/
-            Toast.makeText(context,context.getResources().getString(R.string.error_unknown_error),Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,issue,Toast.LENGTH_SHORT).show();
+            Intent homeIntent = new Intent(activity, HomeActivity.class);
+            activity.startActivity(homeIntent);
+            activity.finish();
 
         }
     }
@@ -201,14 +206,17 @@ public class CreateAppointmentTask extends AsyncTask<Void, Void, Boolean> {
     private boolean fetchDoctorClinics(String clientCredStr) throws JSONException {
 
         final String isSuccessfullyAddedString = "successfullyAdded";
+        final String errorMessageString = "errorMessage";
 
         JSONObject clientJson = new JSONObject(clientCredStr);
         String successFullyAdded = clientJson.getString(isSuccessfullyAddedString);
         if(successFullyAdded.contains("true")){
             return true;
+        }else{
+            issue = clientJson.getString(errorMessageString);
+            return false;
         }
 
-        return false;
     }
 
 
