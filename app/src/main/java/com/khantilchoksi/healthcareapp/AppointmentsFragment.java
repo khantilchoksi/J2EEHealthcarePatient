@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.khantilchoksi.healthcareapp.ArztAsyncCalls.GetAppointmentsTask;
+
 import java.util.ArrayList;
 
 
@@ -19,7 +21,7 @@ import java.util.ArrayList;
  * Use the {@link AppointmentsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AppointmentsFragment extends Fragment {
+public class AppointmentsFragment extends Fragment implements GetAppointmentsTask.AsyncResponse{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,9 +33,9 @@ public class AppointmentsFragment extends Fragment {
 
     private View mRootview;
     private RecyclerView mRecyclerView;
-    private SpecilaityAdapter mSpecialityAdapter;
+    private AppointmentsAdapter mAppointmentAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<Appointment> appointmentList;
+    private ArrayList<Appointment> mAppointmentsList;
     private LinearLayout mNoAppointmentsLinearLayout;
 
     private ProgressDialog progressDialog;
@@ -97,9 +99,22 @@ public class AppointmentsFragment extends Fragment {
         progressDialog.setMessage("Fetching Appointments...");
         progressDialog.show();
 
-        /*GetDoctorMainSpecialitiesTask getDoctorSpecialitiesTask = new GetDoctorMainSpecialitiesTask(getContext(),
+        GetAppointmentsTask getAppointmentsTask = new GetAppointmentsTask(getContext(),
                 getActivity(),this,progressDialog);
-        getDoctorSpecialitiesTask.execute((Void) null);*/
+        getAppointmentsTask.execute((Void) null);
     }
 
+    @Override
+    public void processFinish(ArrayList<Appointment> appointmentsList, ProgressDialog progressDialog) {
+        this.mAppointmentsList = appointmentsList;
+
+
+        if(mAppointmentsList.isEmpty()){
+            mNoAppointmentsLinearLayout.setVisibility(View.VISIBLE);
+        }else{
+            mAppointmentAdapter = new AppointmentsAdapter(this.mAppointmentsList, getActivity());
+            mRecyclerView.setAdapter(mAppointmentAdapter);
+        }
+        progressDialog.dismiss();
+    }
 }
