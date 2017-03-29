@@ -1,11 +1,17 @@
 package com.khantilchoksi.healthcareapp;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import java.util.ArrayList;
 
 
 /**
@@ -23,6 +29,20 @@ public class AppointmentsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private View mRootview;
+    private RecyclerView mRecyclerView;
+    private SpecilaityAdapter mSpecialityAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ArrayList<Appointment> appointmentList;
+    private LinearLayout mNoAppointmentsLinearLayout;
+
+    private ProgressDialog progressDialog;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initDataset();
+    }
 
     public AppointmentsFragment() {
         // Required empty public constructor
@@ -59,7 +79,27 @@ public class AppointmentsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_appointments, container, false);
+        mRootview = inflater.inflate(R.layout.fragment_appointments, container, false);
+
+        mNoAppointmentsLinearLayout = (LinearLayout) mRootview.findViewById(R.id.no_appointments_available_layout);
+
+        mRecyclerView = (RecyclerView) mRootview.findViewById(R.id.appointments_recyclerview);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        return mRootview;
+    }
+
+    private void initDataset() {
+        progressDialog = new ProgressDialog(getActivity(),
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Fetching Appointments...");
+        progressDialog.show();
+
+        /*GetDoctorMainSpecialitiesTask getDoctorSpecialitiesTask = new GetDoctorMainSpecialitiesTask(getContext(),
+                getActivity(),this,progressDialog);
+        getDoctorSpecialitiesTask.execute((Void) null);*/
     }
 
 }

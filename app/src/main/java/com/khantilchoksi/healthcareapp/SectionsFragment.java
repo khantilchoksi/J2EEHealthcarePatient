@@ -32,6 +32,7 @@ public class SectionsFragment extends Fragment implements GetDoctorMainSpecialit
     private RecyclerView mRecyclerView;
     private SpecilaityAdapter mSpecialityAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private ArrayList<String> specialityIdList;
     private ArrayList<String> specialityNamesList;
     private ArrayList<String> specialityDescriptionList;
     private ArrayList<String> specialityIconUrlList;
@@ -68,7 +69,7 @@ public class SectionsFragment extends Fragment implements GetDoctorMainSpecialit
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        initDataset();
+
     }
 
     private void initDataset() {
@@ -122,17 +123,26 @@ public class SectionsFragment extends Fragment implements GetDoctorMainSpecialit
     }
 
     @Override
-    public void processFinish(ArrayList<String> specialityNameList,
+    public void processFinish(ArrayList<String> specialityIdList,
+                              ArrayList<String> specialityNameList,
                               ArrayList<String> specialityDescriptionList,
                               ArrayList<String> specialityIconUrlList,
                               ProgressDialog progressDialog) {
+        this.specialityIdList = specialityIdList;
         this.specialityNamesList = specialityNameList;
         this.specialityDescriptionList = specialityDescriptionList;
         this.specialityIconUrlList = specialityIconUrlList;
         progressDialog.dismiss();
 
-        mSpecialityAdapter = new SpecilaityAdapter(this.specialityNamesList,this.specialityDescriptionList, this.specialityIconUrlList);
+        mSpecialityAdapter = new SpecilaityAdapter(this.specialityIdList,this.specialityNamesList,
+                this.specialityDescriptionList, this.specialityIconUrlList,getActivity());
         // Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mSpecialityAdapter);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initDataset();
     }
 }

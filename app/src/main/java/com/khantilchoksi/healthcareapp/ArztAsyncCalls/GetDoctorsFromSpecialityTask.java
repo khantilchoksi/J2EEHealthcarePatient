@@ -3,11 +3,14 @@ package com.khantilchoksi.healthcareapp.ArztAsyncCalls;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+
 import com.khantilchoksi.healthcareapp.R;
+import com.khantilchoksi.healthcareapp.Doctor;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,38 +27,39 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
  * Created by Khantil on 22-03-2017.
  */
 
-public class GetDoctorMainSpecialitiesTask extends AsyncTask<Void, Void, Boolean> {
+public class GetDoctorsFromSpecialityTask extends AsyncTask<Void, Void, Boolean> {
 
-    private static final String LOG_TAG = GetDoctorMainSpecialitiesTask.class.getSimpleName();
+    private final String LOG_TAG = getClass().getSimpleName();
     Context context;
     Activity activity;
-    ArrayList<String> specialityIdList;
-    ArrayList<String> specialityNameList;
-    ArrayList<String> specialityDescriptionList;
-    ArrayList<String> specialityIconUrlList;
+    String mSpecialityId;
+    ArrayList<Doctor> doctorsList;
+    String issue;
     ProgressDialog progressDialog;
 
     public interface AsyncResponse {
-        void processFinish(ArrayList<String> specialityIdList,ArrayList<String> specialityNameList, ArrayList<String> specialityDescriptionList, ArrayList<String> specialityIconUrlList, ProgressDialog progressDialog);
+        void processFinish(ArrayList<Doctor> doctorsList, ProgressDialog progressDialog);
     }
 
     public AsyncResponse delegate = null;
 
-    public GetDoctorMainSpecialitiesTask(Context context, Activity activity, AsyncResponse delegate, ProgressDialog progressDialog){
+    public GetDoctorsFromSpecialityTask(Context context, Activity activity, String specialityId, AsyncResponse delegate, ProgressDialog progressDialog){
         this.context = context;
         this.activity = activity;
         this.delegate = delegate;
         this.progressDialog = progressDialog;
-        specialityIdList = new ArrayList<String>();
-        specialityNameList = new ArrayList<String>();
-        specialityDescriptionList = new ArrayList<String>();
-        specialityIconUrlList = new ArrayList<String>();
+        this.mSpecialityId = specialityId;
+        doctorsList = new ArrayList<Doctor>();
+        issue = context.getResources().getString(R.string.error_unknown_error);
     }
 
     @Override
@@ -67,7 +71,7 @@ public class GetDoctorMainSpecialitiesTask extends AsyncTask<Void, Void, Boolean
 
         try {
 
-            final String CLIENT_BASE_URL = context.getResources().getString(R.string.base_url).concat("doctorSpecialities");
+            final String CLIENT_BASE_URL = context.getResources().getString(R.string.base_url).concat("getDoctorsFromSpeciality");
             URL url = new URL(CLIENT_BASE_URL);
 
 
@@ -79,9 +83,9 @@ public class GetDoctorMainSpecialitiesTask extends AsyncTask<Void, Void, Boolean
             urlConnection.setDoOutput(true);
 
 
-            /*Uri.Builder builder = new Uri.Builder();
+            Uri.Builder builder = new Uri.Builder();
             Map<String, String> parameters = new HashMap<>();
-            parameters.put("pid", String.valueOf(Utility.getPatientId(context)));
+            parameters.put("specialityId", mSpecialityId);
 
             // encode parameters
             Iterator entries = parameters.entrySet().iterator();
@@ -90,7 +94,7 @@ public class GetDoctorMainSpecialitiesTask extends AsyncTask<Void, Void, Boolean
                 builder.appendQueryParameter(entry.getKey().toString(), entry.getValue().toString());
                 entries.remove();
             }
-            String requestBody = builder.build().getEncodedQuery();*/
+            String requestBody = builder.build().getEncodedQuery();
             Log.d(LOG_TAG, "Service Call URL : " + CLIENT_BASE_URL);
             //Log.d(LOG_TAG, "Post parameters : " + requestBody);
 
@@ -98,7 +102,7 @@ public class GetDoctorMainSpecialitiesTask extends AsyncTask<Void, Void, Boolean
             OutputStream os = new BufferedOutputStream(urlConnection.getOutputStream());
             BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
-            //writer.write(requestBody);    //bcz no parameters to be sent
+            writer.write(requestBody);    //bcz no parameters to be sent
 
             writer.flush();
             writer.close();
@@ -141,10 +145,10 @@ public class GetDoctorMainSpecialitiesTask extends AsyncTask<Void, Void, Boolean
 
             clientCredStr = buffer.toString();
 
-            Log.d(LOG_TAG, "Doctor Main Specialities Credential JSON String : " + clientCredStr);
+            Log.d(LOG_TAG, "Clinics Credential JSON String : " + clientCredStr);
 
 
-            return isSuccessfullyUpdate(clientCredStr);
+            return getAllDoctors(clientCredStr);
 
         } catch (IOException e) {
             Log.d(LOG_TAG, "Error ", e);
@@ -173,6 +177,8 @@ public class GetDoctorMainSpecialitiesTask extends AsyncTask<Void, Void, Boolean
     @Override
     protected void onCancelled() {
         progressDialog.dismiss();
+        Toast.makeText(context,issue,Toast.LENGTH_SHORT).show();
+        //go to parent activity remaining
     }
 
     @Override
@@ -180,58 +186,64 @@ public class GetDoctorMainSpecialitiesTask extends AsyncTask<Void, Void, Boolean
         Log.d(LOG_TAG, "Success Boolean Tag: " + success.toString());
         if (success) {
 
-            delegate.processFinish(specialityIdList,specialityNameList,specialityDescriptionList,specialityIconUrlList,progressDialog);
+            delegate.processFinish(doctorsList, progressDialog);
 
         } else {
 
             progressDialog.dismiss();
 
 
-                /*Snackbar.make(, R.string.error_unknown_error,
+                /*Snackbar.make(context, issue,
                         Snackbar.LENGTH_LONG)
                         .show();*/
-            Toast.makeText(context,context.getResources().getString(R.string.error_unknown_error),Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,issue,Toast.LENGTH_SHORT).show();
 
         }
     }
 
-    private boolean isSuccessfullyUpdate(String clientCredStr) throws JSONException {
+    private boolean getAllDoctors(String clientCredStr) throws JSONException {
 
-        final String specialityListString = "specialityList";
-        final String specialityIdString = "specialityId";
-        final String specialityNameString = "specialityName";
-        final String specialityDescriptionString = "specialityDescription";
-        final String specialityIconString = "specialityIcon";
-        final String iconPrePathString = "prePath";
+        //final String isClinicsAvailableString = "clinicsAvailable";
+        final String doctorsListString = "doctorList";
+        final String doctorIdString = "doctorId";
+        final String doctorNameString = "doctorName";
+        final String clinicAreasListString = "clinicAreasList";
+
 
         String tempId;
         String tempName;
-        String tempDescription;
-        String tempUrl;
+        ArrayList<String> tempAreas;
 
 
         JSONObject clientJson = new JSONObject(clientCredStr);
-        String prePath = clientJson.getString(iconPrePathString);
-        JSONArray specialityJsonArray = clientJson.getJSONArray(specialityListString);
 
-        for(int i=0;i<specialityJsonArray.length();i++){
-            JSONObject specilaityJSONObject = specialityJsonArray.getJSONObject(i);
-            tempId = specilaityJSONObject.getString(specialityIdString);
-            tempName = specilaityJSONObject.getString(specialityNameString);
-            tempDescription = specilaityJSONObject.getString(specialityDescriptionString);
-            tempUrl = prePath.
-                    concat(specilaityJSONObject.getString(specialityIconString));
+        JSONArray doctorsJsonArray = clientJson.getJSONArray(doctorsListString);
+        if(doctorsJsonArray != null){
 
-            Log.d(LOG_TAG,"Speciality: "+tempName+" Des: "+tempDescription+" Url: "+tempUrl);
-            specialityIdList.add(tempId);
-            specialityNameList.add(tempName);
-            specialityDescriptionList.add(tempDescription);
-            specialityIconUrlList.add(tempUrl);
+                for(int i=0;i<doctorsJsonArray.length();i++){
+                    JSONObject doctorJSONObject = doctorsJsonArray.getJSONObject(i);
+                    tempId = doctorJSONObject.getString(doctorIdString);
+                    tempName = doctorJSONObject.getString(doctorNameString);
+
+                    JSONArray areasJsonAray = doctorJSONObject.getJSONArray(clinicAreasListString);
+                    tempAreas = new ArrayList<String>();
+                    for(int j=0;j<areasJsonAray.length();j++){
+                        tempAreas.add(areasJsonAray.getString(j));
+                    }
+
+                    doctorsList.add(new Doctor(tempId,tempName,tempAreas));
+
+                    Log.d(LOG_TAG,"ID : "+tempId+"Name: "+tempName);
+                }
+
+                return true;
+
+
+        }else{
+            issue = context.getResources().getString(R.string.no_dotors_available);
+            return false;
         }
 
-
-
-        return true;
     }
 
 

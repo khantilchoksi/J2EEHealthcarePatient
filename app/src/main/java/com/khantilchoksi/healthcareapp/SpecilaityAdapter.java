@@ -1,5 +1,7 @@
 package com.khantilchoksi.healthcareapp;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -20,9 +21,11 @@ public class SpecilaityAdapter extends RecyclerView.Adapter<SpecilaityAdapter.Vi
 
     private final String LOG_TAG = getClass().getSimpleName();
 
+    private ArrayList<String> specialityIdList;
     private ArrayList<String> specialityNamesList;
     private ArrayList<String> specialityDescriptionList;
     private ArrayList<String> specialityIconList;
+    private Activity mActivity;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView getSpecialityNameTextView() {
@@ -48,6 +51,11 @@ public class SpecilaityAdapter extends RecyclerView.Adapter<SpecilaityAdapter.Vi
                 public void onClick(View v) {
                     Log.d(LOG_TAG," Element: "+getAdapterPosition()+ " clicked. Means "
                             +specialityNamesList.get(getAdapterPosition())+" got.");
+                    String specialityId = specialityIdList.get(getAdapterPosition());
+                    Intent showDoctorsIntent = new Intent(mActivity, ShowDoctorsActivity.class);
+                    showDoctorsIntent.putExtra("specialityId",specialityId);
+                    showDoctorsIntent.putExtra("specialityName",specialityNamesList.get(getAdapterPosition()));
+                    mActivity.startActivity(showDoctorsIntent);
 
                 }
             });
@@ -58,10 +66,12 @@ public class SpecilaityAdapter extends RecyclerView.Adapter<SpecilaityAdapter.Vi
         }
     }
 
-    public SpecilaityAdapter(ArrayList<String> specialityNamesList, ArrayList<String> specialityDescriptionList, ArrayList<String> specialityIconList) {
+    public SpecilaityAdapter(ArrayList<String> specialityIdList,ArrayList<String> specialityNamesList, ArrayList<String> specialityDescriptionList, ArrayList<String> specialityIconList, Activity activity) {
+        this.specialityIdList = specialityIdList;
         this.specialityNamesList = specialityNamesList;
         this.specialityDescriptionList = specialityDescriptionList;
         this.specialityIconList = specialityIconList;
+        this.mActivity = activity;
     }
 
     @Override
