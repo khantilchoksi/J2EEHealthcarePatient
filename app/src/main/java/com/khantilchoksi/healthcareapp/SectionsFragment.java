@@ -111,6 +111,8 @@ public class SectionsFragment extends Fragment implements GetDoctorMainSpecialit
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_sections, container, false);
 
+        initDataset();
+
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.doctor_categories_recyclerview);
         mLayoutManager = new LinearLayoutManager(getActivity());
 
@@ -143,6 +145,6 @@ public class SectionsFragment extends Fragment implements GetDoctorMainSpecialit
     @Override
     public void onStart() {
         super.onStart();
-        initDataset();
+        //initDataset();
     }
 }

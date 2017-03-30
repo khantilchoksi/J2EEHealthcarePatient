@@ -81,4 +81,5 @@
     <string name="rupee_symbol">\u20B9</string>
     <string name="button_book">Book</string>
     <string name="no_appointments_avaliable">You do not have any upcoming appointments.</string>
+    <string name="cancel_appointment">Cancel</string>
 </resources>

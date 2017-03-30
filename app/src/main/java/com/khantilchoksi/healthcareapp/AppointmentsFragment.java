@@ -43,7 +43,7 @@ public class AppointmentsFragment extends Fragment implements GetAppointmentsTas
     @Override
     public void onStart() {
         super.onStart();
-        initDataset();
+        //initDataset();
     }
 
     public AppointmentsFragment() {
@@ -84,7 +84,7 @@ public class AppointmentsFragment extends Fragment implements GetAppointmentsTas
         mRootview = inflater.inflate(R.layout.fragment_appointments, container, false);
 
         mNoAppointmentsLinearLayout = (LinearLayout) mRootview.findViewById(R.id.no_appointments_available_layout);
-
+        initDataset();
         mRecyclerView = (RecyclerView) mRootview.findViewById(R.id.appointments_recyclerview);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
