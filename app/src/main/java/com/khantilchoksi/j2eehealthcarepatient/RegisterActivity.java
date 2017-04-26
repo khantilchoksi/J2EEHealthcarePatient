@@ -211,7 +211,8 @@ public class RegisterActivity extends AppCompatActivity {
         private final String mPassword;
         private boolean isEmailInvalid = false;
         private boolean isMobileInvalid = false;
-        private boolean isUnknownError = false;
+        private boolean isError = false;
+        private String errorMessage;
 
         UserSignUpTask(String name, String email, String mobile, String password) {
             mName = name;
@@ -268,7 +269,7 @@ public class RegisterActivity extends AppCompatActivity {
                 parameters.put("primary_mobile", mMobile);
                 parameters.put("email_id", mEmail);
                 parameters.put("password", mPassword);
-                parameters.put("acctype", "1"); //patient acctype is 1
+                parameters.put("accType", "1"); //patient acctype is 1
 
                 // encode parameters
                 Iterator entries = parameters.entrySet().iterator();
@@ -393,7 +394,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 progressDialog.dismiss();
 
-                if(isMobileInvalid){
+                /*if(isMobileInvalid){
                     mobileEditTextView.setError(getString(R.string.error_mobile_already_registered));
                     mobileEditTextView.requestFocus();
 
@@ -407,8 +408,10 @@ public class RegisterActivity extends AppCompatActivity {
                     Snackbar.make(coordinatorLayout, R.string.error_email_already_registered,
                             Snackbar.LENGTH_LONG)
                             .show();
-                }else if(isUnknownError){
-                    Snackbar.make(coordinatorLayout, R.string.error_unknown_error,
+                }else */
+
+                if(isError){
+                    Snackbar.make(coordinatorLayout, errorMessage,
                             Snackbar.LENGTH_LONG)
                             .show();
                 }else{
@@ -429,9 +432,7 @@ public class RegisterActivity extends AppCompatActivity {
         private boolean validateUser(String clientCredStr) throws JSONException {
 
             final String accountCreated = "accountCreated";
-            final String clientEmailValid = "emailExists";
-            final String clientMobileValid = "mobileExists";
-            final String unknownErrorServer = "unknownError";
+            final String errorMessageString = "errorMessage";
             final String patientIdString = "pid";
             final String fullNameString = "fullName";
 
@@ -445,8 +446,9 @@ public class RegisterActivity extends AppCompatActivity {
                 return true;
             } else {
                 //Account not created successfully
-
-                String isMobileExists = clientJson.getString(clientMobileValid);
+                isError = true;
+                errorMessage = clientJson.getString(errorMessageString);
+                /*String isMobileExists = clientJson.getString(clientMobileValid);
                 if (isMobileExists.contains("false")) {
                     //Mobile is valid
                     String isEmailExists = clientJson.getString(clientEmailValid);
@@ -455,7 +457,7 @@ public class RegisterActivity extends AppCompatActivity {
                         if(isUnknownErrorExists.contains("false")){
 
                         }else{
-                            isUnknownError = true;
+                            isError = true;
                         }
                     } else {
                         //Password is not valid
@@ -467,7 +469,7 @@ public class RegisterActivity extends AppCompatActivity {
                     //Set the error
                     isMobileInvalid = true;
 
-                }
+                }*/
 
             }
 
