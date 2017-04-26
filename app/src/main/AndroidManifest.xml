@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.khantilchoksi.healthcareapp">
+    package="com.khantilchoksi.j2eehealthcarepatient">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -24,12 +24,12 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.khantilchoksi.j2eehealthcarepatient.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LoginActivity"
+            android:name="com.khantilchoksi.j2eehealthcarepatient.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Dark">
             <intent-filter>
@@ -39,28 +39,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
+            android:name="com.khantilchoksi.j2eehealthcarepatient.RegisterActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Dark" />
         <activity
-            android:name=".MyProfileActivity"
+            android:name="com.khantilchoksi.j2eehealthcarepatient.MyProfileActivity"
             android:label="@string/title_activity_my_profile"
             android:launchMode="singleTop"
-            android:parentActivityName=".HomeActivity"
+            android:parentActivityName="com.khantilchoksi.j2eehealthcarepatient.HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".HomeActivity"
+            android:name="com.khantilchoksi.j2eehealthcarepatient.HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ShowDoctorsActivity"
+            android:name="com.khantilchoksi.j2eehealthcarepatient.ShowDoctorsActivity"
             android:label="@string/title_activity_show_doctors"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".DoctorClinicSlotsActivity"
+            android:name="com.khantilchoksi.j2eehealthcarepatient.DoctorClinicSlotsActivity"
             android:label="@string/title_activity_doctor_clinic_slots"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
