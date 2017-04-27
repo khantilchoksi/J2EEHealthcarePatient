@@ -663,7 +663,7 @@ public class ProfileFragment extends Fragment implements GetPatientProfileTask.A
                     Log.d("Permission", "User has checked never show me again.");
                     Snackbar.make(mRootView, "Go to Settings",
                             Snackbar.LENGTH_INDEFINITE)
-                            .setAction("Settrings", new View.OnClickListener() {
+                            .setAction("Settrngs", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
