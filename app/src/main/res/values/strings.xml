@@ -72,10 +72,10 @@
     <string name="title_activity_home">Arzt</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="profile_updated">Profile Details Updated!</string>
-    <string name="title_activity_show_doctors">ShowDoctorsActivity</string>
+    <string name="title_activity_show_doctors">Doctors</string>
     <string name="no_doctors_registered_for_this_specialtiy">No doctors registered for this speciality.</string>
     <string name="no_dotors_available">No doctors available.</string>
-    <string name="title_activity_doctor_clinic_slots">DoctorClinicSlotsActivity</string>
+    <string name="title_activity_doctor_clinic_slots">Book Appointment</string>
     <string name="no_clinics_available">Doctor has not registered any clincis with us.</string>
 
     <string name="rupee_symbol">\u20B9</string>
